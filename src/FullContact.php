@@ -59,12 +59,6 @@ class FullContact
 		$this->_apiKey = $api_key;
 	}
 
-	protected function setResource($resource_type)
-    {
-        // Set resource. If not available, default to JSON.
-        $this->_resourceUri = ($this->_supportedResources[$resource_type]) ? $this->_supportedResources[$resource_type] : $this->_supportedResources['json'];
-    }
-
 	/**
      * This is a pretty close copy of my work on the Contactually PHP library
      *   available here: http://github.com/caseysoftware/contactually-php
@@ -154,5 +148,11 @@ class FullContact
     {
         json_decode($string);
         return (json_last_error() == JSON_ERROR_NONE);
+    }
+
+    public function setResource($resource_type)
+    {
+        // Set resource. If not available, default to JSON.
+        $this->_resourceUri = ($this->_supportedResources[$resource_type]) ? $this->_supportedResources[$resource_type] : $this->_supportedResources['json'];
     }
 }
