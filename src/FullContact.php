@@ -46,7 +46,7 @@ class FullContact
 
 	public $response_obj  = null;
 	public $response_code = null;
-	public $response_json = null;
+	public $response = null;
 
 	/**
      * The base constructor needs the API key available from here:
