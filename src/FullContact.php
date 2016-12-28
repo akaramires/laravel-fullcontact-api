@@ -75,7 +75,7 @@ class FullContact
 			" does not support the [" . $params['method'] . "] method");
 		}
 
-        if(!$this->_supportedResources[$params['resource']]){
+        if(!array_key_exists($params['resource'],$this->_supportedResources)){
             throw new FullContactExceptionNotImplemented(__CLASS__ .
                 " does not support the [" . $params['resource'] . "] resource");
         }
