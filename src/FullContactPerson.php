@@ -29,8 +29,8 @@ class FullContactPerson extends FullContact
      * @var $_supportedMethods
      */
     protected $_supportedMethods = array('email', 'phone', 'twitter', 'facebookUsername');
-    protected $_supportedResources = array('json' => '/person.json', 'html' => '/person.html');
-    protected $_resourceUri = '/person.json';
+    protected $_supportedResources = array('json' => '/person.json', 'html' => '/person.html', 'xml' => '/person.xml');
+    protected $_resourceUri = null;
 
     public function lookupByEmail($search, $resource = 'json')
     {
