@@ -75,6 +75,13 @@ class FullContact
 			" does not support the [" . $params['method'] . "] method");
 		}
 
+        if(!in_array($params['resource'], $this->_supportedResources)){
+            throw new FullContactExceptionNotImplemented(__CLASS__ .
+                " does not support the [" . $params['resource'] . "] resource");
+        }
+
+        $this->_setResource($params['resource']);
+
 		$params['apiKey'] = urlencode($this->_apiKey);
 
 		$fullUrl = $this->_baseUri . $this->_version . $this->_resourceUri .
@@ -150,9 +157,8 @@ class FullContact
         return (json_last_error() == JSON_ERROR_NONE);
     }
 
-    public function setResource($resource_type)
+    public function _setResource($resource_type)
     {
-        // Set resource. If not available, default to JSON.
         $this->_resourceUri = ($this->_supportedResources[$resource_type]) ? $this->_supportedResources[$resource_type] : $this->_supportedResources['json'];
     }
 }

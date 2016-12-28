@@ -32,37 +32,37 @@ class FullContactPerson extends FullContact
     protected $_supportedResources = array('json' => '/person.json','html' => '/person.html');
     protected $_resourceUri = '/person.json';
 
-    public function lookupByEmail($search)
+    public function lookupByEmail($search, $resource = 'json')
     {
-        $this->_execute(array('email' => $search, 'method' => 'email'));
+        $this->_execute(array('email' => $search, 'method' => 'email', 'resource' => $resource));
 
         return $this->response_obj;
     }
 
-    public function lookupByEmailMD5($search)
+    public function lookupByEmailMD5($search, $resource = 'json')
     {
-        $this->_execute(array('emailMD5' => $search, 'method' => 'email'));
+        $this->_execute(array('emailMD5' => $search, 'method' => 'email', 'resource' => $resource));
 
         return $this->response_obj;
     }
 
-    public function lookupByPhone($search)
+    public function lookupByPhone($search, $resource = 'json')
     {
-        $this->_execute(array('phone' => $search, 'method' => 'phone'));
+        $this->_execute(array('phone' => $search, 'method' => 'phone', 'resource' => $resource));
 
         return $this->response_obj;
     }
 
-    public function lookupByTwitter($search)
+    public function lookupByTwitter($search, $resource = 'json')
     {
-        $this->_execute(array('twitter' => $search, 'method' => 'twitter'));
+        $this->_execute(array('twitter' => $search, 'method' => 'twitter', 'resource' => $resource));
 
         return $this->response_obj;
     }
 
-    public function lookupByFacebook($search)
+    public function lookupByFacebook($search, $resource = 'json')
     {
-        $this->_execute(array('facebookUsername' => $search, 'method' => 'facebookUsername'));
+        $this->_execute(array('facebookUsername' => $search, 'method' => 'facebookUsername', 'resource' => $resource));
 
         return $this->response_obj;
     }
