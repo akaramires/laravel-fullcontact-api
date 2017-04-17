@@ -46,7 +46,7 @@ class FullContact
 
 	public $response_obj  = null;
 	public $response_code = null;
-	public $response_json = null;
+	public $response = null;
 
 	/**
      * The base constructor needs the API key available from here:
@@ -75,17 +75,25 @@ class FullContact
 			" does not support the [" . $params['method'] . "] method");
 		}
 
+        if(!array_key_exists($params['resource'],$this->_supportedResources)){
+            throw new FullContactExceptionNotImplemented(__CLASS__ .
+                " does not support the [" . $params['resource'] . "] resource");
+        }
+
+        $this->_setResource($params['resource']);
+
 		$params['apiKey'] = urlencode($this->_apiKey);
 
 		$fullUrl = $this->_baseUri . $this->_version . $this->_resourceUri .
 		'?' . http_build_query($params);
 
-		$cached_json = $this->_getFromCache($fullUrl);
-		if ( $cached_json !== false )
+		$cached = $this->_getFromCache($fullUrl);
+		if ( $cached !== false )
 		{
-			$this->response_json = $cached_json;
+			$this->response = $cached;
 			$this->response_code = 200;
-			$this->response_obj  = json_decode($this->response_json);
+			// if the response is json, we need to decode it
+            $this->response_obj = ($this->_isJson($this->response)) ? json_decode($this->response) : $this->response;
 		}
 		else
 		{
@@ -97,13 +105,14 @@ class FullContact
 			curl_setopt($connection, CURLOPT_USERAGENT, self::USER_AGENT);
 			
 			//execute request
-			$this->response_json = curl_exec($connection);
+			$this->response = curl_exec($connection);
 			$this->response_code = curl_getinfo($connection, CURLINFO_HTTP_CODE);
 			if ( '200' == $this->response_code )
 			{
-				$this->_saveToCache($fullUrl, $this->response_json);
+				$this->_saveToCache($fullUrl, $this->response);
 			}
-			$this->response_obj  = json_decode($this->response_json);
+            // if the response is json, we need to decode it
+            $this->response_obj = ($this->_isJson($this->response)) ? json_decode($this->response) : $this->response;
 
 			curl_close($connection);
 
@@ -115,25 +124,41 @@ class FullContact
 		return $this->response_obj;
 	}
 
-	protected function _saveToCache($url, $response_json)
+	protected function _saveToCache($url, $response)
 	{
 		$cache_path = 'FullContactCache/';
-		$cache_file_name = $cache_path.'/'.md5(urldecode($url)).'.json';
+		$cache_file_name = $cache_path.'/'.md5(urldecode($url)).'.'.$this->_getResourceExtension();
 		
-		return \Storage::put($cache_file_name, $response_json);
+		return \Storage::put($cache_file_name, $response);
 	}
 
 	protected function _getFromCache($url)
 	{
 		$cache_path = 'FullContactCache/';
-		$cache_file_name = $cache_path.'/'.md5(urldecode($url)).'.json';
+		$cache_file_name = $cache_path.'/'.md5(urldecode($url)).'.'.$this->_getResourceExtension();
 
 		if ( \Storage::exists($cache_file_name) )
 		{
-			$json_content = \Storage::get($cache_file_name);
-			return $json_content;
+			$content = \Storage::get($cache_file_name);
+			return $content;
 		}
 
 		return false;
 	}
+
+	protected function _getResourceExtension()
+    {
+        return explode(".",$this->_resourceUri)[1];
+    }
+
+    protected function _isJson($string)
+    {
+        json_decode($string);
+        return (json_last_error() == JSON_ERROR_NONE);
+    }
+
+    public function _setResource($resource_type)
+    {
+        $this->_resourceUri = ($this->_supportedResources[$resource_type]) ? $this->_supportedResources[$resource_type] : $this->_supportedResources['json'];
+    }
 }
