@@ -55,6 +55,6 @@
          */
         public function provides()
         {
-            return array('fullcontact', 'Akaramires\FullContact\FullContactPerson');
+            return array('fullcontact', 'Akaramires\FullContact\FullContactPerson', 'Akaramires\FullContact\FullContactCompany');
         }
     }
